@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import { Input, Button, Form, Checkbox, Upload, Space, Tag, Flex, List, Avatar } from "antd";
+import ReactAudioPlayer from 'react-audio-player';
+
+import { Input, Button, Form, Checkbox, Upload, Space, Tag, Flex, List, Modal } from "antd";
 import { useCreateMeditationMutation, useUpdateMeditationMutation } from "../../api/meditation";
 import { useAppDispatch, useAppSelector } from "../../store/storeHooks";
 import { Meditation } from "../../@types/entity/Meditation";
@@ -10,6 +12,8 @@ import { addMeditation, editMeditatation } from "../../store/slices/meditationSl
 import type { UploadFile, UploadProps } from 'antd/es/upload/interface';
 import type { UploadChangeParam } from 'antd/es/upload';
 import { useForm } from "antd/es/form/Form";
+import AudioModal from "../audio/AudioModal";
+import { Audio } from "../../@types/entity/Audio";
 
 const { CheckableTag } = Tag;
 
@@ -43,8 +47,9 @@ const MeditationModal = ({ meditatation, close }: Props) => {
   const categories = useAppSelector(selectCategories);
   const [selectedTags, setSelectedTags] = useState<Category[]>([]);
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [photo, setPhoto] = useState<string | null>();
-
+  const [selectedAudio, setSelectedAudio] = useState<Audio | null>(null);
   const handleChange = (tag: Category, checked: boolean) => {
     const nextSelectedTags = checked
       ? [...selectedTags, tag]
@@ -126,23 +131,26 @@ const MeditationModal = ({ meditatation, close }: Props) => {
           <Form.Item>
             <Space>
               <Button type="primary" htmlType="submit" loading={createIsLoading || updateIsLoading}>Сохранить</Button>
-              <Button type="primary">Добавить аудио</Button>
+              <Button type="primary" onClick={() => setIsOpen(true)}>Добавить аудио</Button>
             </Space>
           </Form.Item>
         </Form>
         <List
           itemLayout="horizontal"
-          dataSource={datas}
+          dataSource={meditatation?.audios}
           renderItem={(item) => (
-            <List.Item>
-              <List.Item.Meta
-                title={<a href="https://ant.design">{item.title}</a>}
-                description="Ant Design, a design language for background applications, is refined by Ant UED Team"
-              />
+            <List.Item actions={[<a key="list-loadmore-more">Удалить</a>]}>
+              <Flex>
+                <ReactAudioPlayer src={item.link} controls />
+                
+              </Flex>
             </List.Item>
           )}
         />
       </Flex>
+      <Modal title="Аудио" open={isOpen} onCancel={() => setIsOpen(false)} footer={null}>
+        <AudioModal audio={selectedAudio} close={() => setIsOpen(false)} meditationId={meditatation?.id} />
+      </Modal>
     </Flex>
   )
 }

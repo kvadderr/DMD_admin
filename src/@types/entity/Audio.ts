@@ -1,4 +1,6 @@
 export type Audio = {
-  id: number;
+  id?: number;
   link: string;
+  meditation_id?: number;
+  voice_id?: number;
 };

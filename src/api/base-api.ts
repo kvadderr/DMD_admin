@@ -7,7 +7,8 @@ export const baseApi = createApi({
   tagTypes: [
     'User',
     'Category',
-    'Meditation'
+    'Meditation',
+    'Audio'
   ],
   endpoints: () => ({}),
 });
