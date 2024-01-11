@@ -5,6 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import { menuItems } from '../constsnts/menuItems';
 import { useGetAllCategoryQuery } from '../api/category';
 import { useGetAllMeditationQuery } from '../api/meditation';
+import { useGetAllVoicesQuery } from '../api/voice';
+import { useAppDispatch } from '../store/storeHooks';
+import { logout } from '../store/slices/authSlice';
 
 type Props = {
   children: React.ReactNode
@@ -16,12 +19,15 @@ const PrivateLayout = ({ children }: Props) => {
 
   useGetAllCategoryQuery();
   useGetAllMeditationQuery();
+  useGetAllVoicesQuery();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
   const onClick = (item: any) => {
+    if (item.key === 'exit') dispatch(logout())
     navigate(item.key)
   }
 

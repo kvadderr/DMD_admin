@@ -13,6 +13,15 @@ const slice = createSlice({
     meditation: []
   } as MeditationState,
   reducers: {
+    addMeditation: (state, action) => {
+      state.meditation.push(action.payload);
+    },
+    editMeditatation: (state, action) => {
+      const index = state.meditation.findIndex(meditation => meditation.id === action.payload.id);
+      if (index !== -1) {
+        state.meditation[index] = action.payload;
+      }
+    }
   },
   extraReducers: builder => {
     builder
@@ -29,6 +38,6 @@ export const selectMeditation = (state: RootState): Meditation[] =>
   state.meditationSlice.meditation;
 
 
-export const { } = slice.actions;
+export const { addMeditation, editMeditatation } = slice.actions;
 
 export default slice.reducer;

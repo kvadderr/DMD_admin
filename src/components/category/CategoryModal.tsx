@@ -12,10 +12,10 @@ type Props = {
   close: () => void;
 }
 
-const CategoryModal = ({ category }: Props) => {
+const CategoryModal = ({ category, close }: Props) => {
   const [createCategory, {isLoading: isLoadingCreate}] = useCreateCategoryMutation();
   const [updateCategory, {isLoading: isLoadingUpdate}] = useUpdateCategoryMutation();
-  const [currentCategory, setCurrentCategory] = useState<Category | null>();
+  const [currentCategory, setCurrentCategory] = useState<Partial<Category> | null>();
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -30,14 +30,13 @@ const CategoryModal = ({ category }: Props) => {
 
   const onClick = async () => {
     if (category && currentCategory) {
-      console.log(currentCategory)
       await updateCategory(currentCategory).unwrap()
       dispatch(editCategory(currentCategory))
     } else if (currentCategory) {
       await createCategory(currentCategory).unwrap()
       dispatch(addCategory(currentCategory))
     };
-    
+    close();
   }
 
   return (

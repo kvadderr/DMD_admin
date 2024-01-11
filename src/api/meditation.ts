@@ -7,14 +7,38 @@ const meditationApi = baseApi.injectEndpoints({
       query: () => ({
         url: `/meditation`,
         method: 'GET',
-        providesTags: ['Category'],
+        providesTags: ['Meditation'],
+      }),
+    }),
+    createMeditation: builder.mutation<void, Partial<Meditation>>({
+      query: dto => ({
+          url: '/meditation',
+          body: dto,
+          method: 'POST',
+      }),
+    }),
+    updateMeditation: builder.mutation<void, Partial<Meditation>>({
+      query: (dto) => ({
+          url: '/meditation/'+dto.id,
+          body: dto,
+          method: 'PATCH',
+      }),
+    }),
+    deleteMeditation: builder.mutation<any, any>({
+      query: () => ({
+        url: `/meditation`,
+        method: 'DELETE',
+        providesTags: ['meditation'],
       }),
     }),
   })
 })
 
 export const {
-  useGetAllMeditationQuery
+  useGetAllMeditationQuery,
+  useCreateMeditationMutation,
+  useUpdateMeditationMutation,
+  useDeleteMeditationMutation
 } = meditationApi
 
 export default meditationApi

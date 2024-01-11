@@ -26,13 +26,11 @@ const Voices = () => {
       </Flex>
       <List
         dataSource={voices}
-        renderItem={(voice, index) => (
+        renderItem={(voice) => (
           <List.Item
             actions={[<Button onClick={() => openModal(voice)}>Редактировать</Button>, <Button danger>Удалить</Button>]}>
             <List.Item.Meta
-              avatar={
-                <Avatar src={`https://xsgames.co/randomusers/avatar.php?g=pixel&key=${index}`} />
-              }
+              avatar={<Avatar src={voice.photo} shape="square" size={64}/>}
               title={voice.name}
               description={voice.description}
             />
@@ -40,7 +38,7 @@ const Voices = () => {
         )}
       />
       <Modal title="Данные диктора" footer={null} open={isOpen} onCancel={() => setIsOpen(false)}>
-        <VoiceModal voice={selectedVoice}/>
+        <VoiceModal voice={selectedVoice} close={() => setIsOpen(false)}/>
       </Modal>
     </Flex>
   )

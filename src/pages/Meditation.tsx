@@ -4,14 +4,19 @@ import { Meditation } from "../@types/entity/Meditation";
 import { useAppSelector } from "../store/storeHooks";
 import { selectMeditation } from "../store/slices/meditationSlice";
 import { useState } from "react";
-
+import MeditaionModal from "../components/meditation/MeditationModal";
 const { Text, Title } = Typography
 
 const MeditationPage = () => {
 
   const [isOpen, setIsOpen] = useState(false);
-
+  const [selectedMeditation, setSelectedMeditation] = useState<Meditation | null>(null);
   const meditations = useAppSelector(selectMeditation)
+
+  const openModal = (item: Meditation | null) => {
+    setSelectedMeditation(item);
+    setIsOpen(true)
+  }
   const columns: ColumnsType<Meditation> = [
     {
       title: 'Название',
@@ -53,7 +58,7 @@ const MeditationPage = () => {
       key: 'action',
       render: (_, item) => (
         <Space size="middle" key={item.id}>
-          <Button>Изменить</Button>
+          <Button onClick={() => openModal(item)}>Изменить</Button>
         </Space>
       ),
     },
@@ -63,10 +68,11 @@ const MeditationPage = () => {
     <Flex vertical gap={10}>
       <Flex align="center" justify="space-between">
         <Title level={4}>Медитации</Title>
-        <Button type="primary" onClick={() => setIsOpen(true)}>Добавить медитацию</Button>
+        <Button type="primary" onClick={() => openModal(null)}>Добавить медитацию</Button>
       </Flex>
-      <Table columns={columns} dataSource={meditations} />
-      <Modal title="Данные медитации" footer={null} open={isOpen} onCancel={() => setIsOpen(false)}>
+      <Table columns={columns} dataSource={meditations} rowKey={meditation => meditation.id}/>
+      <Modal width={1200} title="Данные медитации" footer={null} open={isOpen} onCancel={() => setIsOpen(false)}>
+        <MeditaionModal meditatation={selectedMeditation} close={() => setIsOpen(false)}/>
       </Modal>
     </Flex>
   )

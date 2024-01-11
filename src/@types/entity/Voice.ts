@@ -5,5 +5,5 @@ export type Voice = {
   name: string;
   photo: string;
   description: string;
-  audios: Audio[];
+  audios?: Audio[];
 };

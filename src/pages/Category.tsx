@@ -25,10 +25,11 @@ const CategoryPage = () => {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
-      render: (text) => <Text>{text}</Text>,
+      render: (text) => <Text key={text}>{text}</Text>,
     },
     {
       title: 'Action',
+      dataIndex: 'action',
       key: 'action',
       render: (_, item) => (
         <Space size="middle" key={item.id}>
@@ -45,7 +46,7 @@ const CategoryPage = () => {
         <Title level={4}>Категории</Title>
         <Button type="primary" onClick={() => openModal(null)}>Добавить категорию</Button>
       </Flex>
-      <Table columns={columns} dataSource={categories} />
+      <Table columns={columns} dataSource={categories} rowKey={category => category.id}/>
       <Modal title="Данные категории" footer={null} open={isOpen} onCancel={() => setIsOpen(false)}>
         <CategoryModal category={selectedCategory} close={() => setIsOpen(false)}/>
       </Modal>

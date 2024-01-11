@@ -10,7 +10,7 @@ const categoryApi = baseApi.injectEndpoints({
         providesTags: ['Category'],
       }),
     }),
-    createCategory: builder.mutation<void, Category>({
+    createCategory: builder.mutation<void, Partial<Category>>({
       query: dto => ({
           url: '/category',
           body: dto,
