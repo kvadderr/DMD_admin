@@ -13,7 +13,7 @@ type Props = {
 }
 
 const CategoryModal = ({ category, close }: Props) => {
-  const [createCategory, {isLoading: isLoadingCreate}] = useCreateCategoryMutation();
+  const [createCategory, {data: dataCreate, isLoading: isLoadingCreate}] = useCreateCategoryMutation();
   const [updateCategory, {isLoading: isLoadingUpdate}] = useUpdateCategoryMutation();
   const [currentCategory, setCurrentCategory] = useState<Partial<Category> | null>();
   const dispatch = useAppDispatch();
@@ -34,11 +34,14 @@ const CategoryModal = ({ category, close }: Props) => {
       dispatch(editCategory(currentCategory))
     } else if (currentCategory) {
       await createCategory(currentCategory).unwrap()
-      dispatch(addCategory(currentCategory))
     };
     close();
   }
 
+  useEffect(() => {
+    dataCreate && dispatch(addCategory(currentCategory))
+  }, [dataCreate])
+  
   return (
     <Flex vertical gap={10}>
       <Input addonBefore={'Название категории'} value={currentCategory ? currentCategory.name : ''} onChange={handleNameChange}/>

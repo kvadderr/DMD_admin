@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-import ReactAudioPlayer from 'react-audio-player';
-
-import { Input, Button, Form, Checkbox, Upload, Space, Tag, Flex, List, Modal } from "antd";
+import { Input, Button, Form, Checkbox, Upload, Space, Tag, Flex } from "antd";
 import { useCreateMeditationMutation, useUpdateMeditationMutation } from "../../api/meditation";
 import { useAppDispatch, useAppSelector } from "../../store/storeHooks";
 import { Meditation } from "../../@types/entity/Meditation";
@@ -12,9 +10,6 @@ import { addMeditation, editMeditatation } from "../../store/slices/meditationSl
 import type { UploadFile, UploadProps } from 'antd/es/upload/interface';
 import type { UploadChangeParam } from 'antd/es/upload';
 import { useForm } from "antd/es/form/Form";
-import AudioModal from "../audio/AudioModal";
-import { Audio } from "../../@types/entity/Audio";
-
 const { CheckableTag } = Tag;
 
 type Props = {
@@ -23,33 +18,16 @@ type Props = {
 }
 
 const MeditationModal = ({ meditatation, close }: Props) => {
-
-  const datas = [
-    {
-      title: 'Ant Design Title 1',
-    },
-    {
-      title: 'Ant Design Title 2',
-    },
-    {
-      title: 'Ant Design Title 3',
-    },
-    {
-      title: 'Ant Design Title 4',
-    },
-  ];
-
   const [form] = useForm();
   const dispatch = useAppDispatch();
-  const [createMeditation, { data, isLoading: createIsLoading }] = useCreateMeditationMutation();
+  const [createMeditation, { data: dataCreate, isLoading: createIsLoading }] = useCreateMeditationMutation();
   const [updateMeditation, { isLoading: updateIsLoading }] = useUpdateMeditationMutation();
 
   const categories = useAppSelector(selectCategories);
   const [selectedTags, setSelectedTags] = useState<Category[]>([]);
   const [isSubscribed, setIsSubscribed] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
   const [photo, setPhoto] = useState<string | null>();
-  const [selectedAudio, setSelectedAudio] = useState<Audio | null>(null);
+
   const handleChange = (tag: Category, checked: boolean) => {
     const nextSelectedTags = checked
       ? [...selectedTags, tag]
@@ -63,19 +41,27 @@ const MeditationModal = ({ meditatation, close }: Props) => {
     }
   };
 
+  useEffect(() => {
+    if (dataCreate) {
+      dispatch(addMeditation(dataCreate));
+      close();
+    }
+  }, [dataCreate])
+
   const onFinish = async (values: any) => {
     values.categories = selectedTags;
     values.photo = photo;
     values.isSubscribed = isSubscribed;
-    meditatation = { ...meditatation, ...values };
+    const { audios, ...newMeditatation } = meditatation || {};
+    meditatation = { ...newMeditatation, ...values };
+  
     if (meditatation?.id) {
       meditatation && await updateMeditation(meditatation).unwrap()
       dispatch(editMeditatation(meditatation))
+      close();
     } else {
       meditatation && await createMeditation(meditatation).unwrap()
-      dispatch(addMeditation(meditatation))
     };
-    close();
 
 
   }
@@ -91,7 +77,6 @@ const MeditationModal = ({ meditatation, close }: Props) => {
       setPhoto(null);
       setIsSubscribed(false)
     }
-
   }, [meditatation])
 
   return (
@@ -102,7 +87,7 @@ const MeditationModal = ({ meditatation, close }: Props) => {
         onChange={handleChangePhoto}
         style={{ width: 100 }}
         action={import.meta.env.VITE_FILE_STORAGE_URL + "/uploadImage"}>
-        {photo ? <img src={photo} alt="avatar" style={{ width: 300, height: '100%', objectFit: 'cover' }} /> : "Загрузить"}
+        {photo ? <img src={photo} alt="avatar" style={{ height: 400, objectFit: 'cover' }} /> : "Загрузить"}
       </Upload>
       <Flex vertical>
         <Form form={form} name="loginForm" initialValues={meditatation || undefined} autoComplete="off" onFinish={onFinish}>
@@ -129,28 +114,10 @@ const MeditationModal = ({ meditatation, close }: Props) => {
             </Space>
           </Form.Item>
           <Form.Item>
-            <Space>
-              <Button type="primary" htmlType="submit" loading={createIsLoading || updateIsLoading}>Сохранить</Button>
-              <Button type="primary" onClick={() => setIsOpen(true)}>Добавить аудио</Button>
-            </Space>
+            <Button type="primary" htmlType="submit" loading={createIsLoading || updateIsLoading}>Сохранить</Button>
           </Form.Item>
         </Form>
-        <List
-          itemLayout="horizontal"
-          dataSource={meditatation?.audios}
-          renderItem={(item) => (
-            <List.Item actions={[<a key="list-loadmore-more">Удалить</a>]}>
-              <Flex>
-                <ReactAudioPlayer src={item.link} controls />
-                
-              </Flex>
-            </List.Item>
-          )}
-        />
       </Flex>
-      <Modal title="Аудио" open={isOpen} onCancel={() => setIsOpen(false)} footer={null}>
-        <AudioModal audio={selectedAudio} close={() => setIsOpen(false)} meditationId={meditatation?.id} />
-      </Modal>
     </Flex>
   )
 }

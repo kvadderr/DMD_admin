@@ -1,31 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../store/storeHooks";
-import { Flex, Button, Upload, Select } from "antd";
-
+import { Flex, Button, Upload, Select, List } from "antd";
+import ReactAudioPlayer from 'react-audio-player';
 import type { UploadProps } from 'antd';
-import { useCreateAudioMutation, useUpdateAudioMutation } from "../../api/audio";
+import { useCreateAudioMutation } from "../../api/audio";
 import { selectVoices } from "../../store/slices/voiceSlice";
+import { addMeditatationAudio } from "../../store/slices/meditationSlice";
 import { Audio } from "../../@types/entity/Audio";
+import { Meditation } from "../../@types/entity/Meditation";
 const { Dragger } = Upload;
 
 type Props = {
-  audio: Audio | null;
+  audios?: Audio[];
   close: () => void;
-  meditationId?: number;
+  meditation: Meditation | null;
 }
 
-const AudioModal = ({ audio, close, meditationId }: Props) => {
+const AudioModal = ({ audios, close, meditation }: Props) => {
+  console.log(meditation)
   const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
-  const [createAudio, { isLoading: isLoadingCreate }] = useCreateAudioMutation();
-  const [updateAudio, { isLoading: isLoadingUpdate }] = useUpdateAudioMutation();
+  const [createAudio, { data: dataCreate, isLoading: isLoadingCreate }] = useCreateAudioMutation();
   const [link, setLink] = useState("");
   const [selectedVoicer, setSelectedVoicer] = useState<number>()
+  const [audioData, setAudioData] = useState<Audio[]>([])
   const voices = useAppSelector(selectVoices);
   const save = async () => {
+    console.log(meditation)
     const data: Audio = {
       link: link,
-      meditation_id: meditationId,
+      meditation_id: meditation?.id,
       voice_id: selectedVoicer
     }
     createAudio(data).unwrap()
@@ -56,9 +60,31 @@ const AudioModal = ({ audio, close, meditationId }: Props) => {
     setSelectedVoicer(value);
   };
   
+  useEffect(() => {
+    setAudioData(audios ? audios : [])
+  }, [audios])
+  useEffect(() => {
+    if (dataCreate) {
+      dispatch(addMeditatationAudio(dataCreate))
+      const updatedAudios = [...audioData, dataCreate];
+      setAudioData(updatedAudios)
+    } 
+  }, [dataCreate])
+
 
   return (
     <Flex vertical gap={10}>
+      <List
+        itemLayout="horizontal"
+        dataSource={audioData}
+        renderItem={(item) => (
+          <List.Item actions={[<a key="list-loadmore-more">Удалить</a>]}>
+            <Flex>
+              <ReactAudioPlayer src={item.link} controls />
+            </Flex>
+          </List.Item>
+        )}
+      />
       <Dragger {...props}>
         <p className="ant-upload-text">Загрузите новое аудио</p>
       </Dragger>
@@ -66,7 +92,7 @@ const AudioModal = ({ audio, close, meditationId }: Props) => {
         value={selectedVoicer}
         onChange={handleChange}
         options={selectOptions} />
-      <Button type="primary" loading={isLoadingCreate || isLoadingUpdate || loading} onClick={save}>Сохранить</Button>
+      <Button type="primary" loading={isLoadingCreate || loading} onClick={save}>Сохранить</Button>
     </Flex>
 
   )

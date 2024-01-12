@@ -1,4 +1,4 @@
-import { Avatar, List, Typography, Flex, Button, Modal } from "antd"
+import { Avatar, List, Typography, Flex, Button, Modal, Popconfirm } from "antd"
 import { useAppSelector } from "../store/storeHooks"
 import { selectVoices } from "../store/slices/voiceSlice"
 import { useState } from "react"
@@ -28,9 +28,16 @@ const Voices = () => {
         dataSource={voices}
         renderItem={(voice) => (
           <List.Item
-            actions={[<Button onClick={() => openModal(voice)}>Редактировать</Button>, <Button danger>Удалить</Button>]}>
+            actions={[<Button onClick={() => openModal(voice)}>Редактировать</Button>,
+            <Popconfirm
+              title="Удаление диктора"
+              description="Вы уверены  что хотите удалить?"
+              okText="Да"
+              cancelText="Нет">
+              <Button danger>Удалить</Button>
+            </Popconfirm>]}>
             <List.Item.Meta
-              avatar={<Avatar src={voice.photo} shape="square" size={64}/>}
+              avatar={<Avatar src={voice.photo} shape="square" size={64} />}
               title={voice.name}
               description={voice.description}
             />
@@ -38,7 +45,7 @@ const Voices = () => {
         )}
       />
       <Modal title="Данные диктора" footer={null} open={isOpen} onCancel={() => setIsOpen(false)}>
-        <VoiceModal voice={selectedVoice} close={() => setIsOpen(false)}/>
+        <VoiceModal voice={selectedVoice} close={() => setIsOpen(false)} />
       </Modal>
     </Flex>
   )

@@ -22,7 +22,7 @@ const VoiceModal = ({ voice, close }: Props) => {
   }
   const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
-  const [createVoice, { isLoading: isLoadingCreate }] = useCreateVoiceMutation();
+  const [createVoice, { data:  dataCreate, isLoading: isLoadingCreate }] = useCreateVoiceMutation();
   const [updateVoice, { isLoading: isLoadingUpdate }] = useUpdateVoiceMutation();
   const [voiceData, setVoiceData] = useState<Partial<Voice>>(voiceBasicData);
 
@@ -65,12 +65,13 @@ const VoiceModal = ({ voice, close }: Props) => {
       dispatch(editVoice(voiceData))
     } else if (voiceData) {
       await createVoice(voiceData).unwrap()
-      dispatch(addVoice(voiceData))
     };
     close();
   }
 
-
+  useEffect(() => {
+    dataCreate && dispatch(addVoice(dataCreate))
+  }, [dataCreate])
 
   return (
     <Flex vertical gap={10}>
