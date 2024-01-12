@@ -25,8 +25,8 @@ const meditationApi = baseApi.injectEndpoints({
       }),
     }),
     deleteMeditation: builder.mutation<any, any>({
-      query: () => ({
-        url: `/meditation`,
+      query: (dto) => ({
+        url: `/meditation/`+dto.id,
         method: 'DELETE',
         providesTags: ['meditation'],
       }),

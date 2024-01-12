@@ -3,7 +3,7 @@ import { rootReducer } from './rootReducer';
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { baseApi } from '../api/base-api';
-
+import authMiddleware from './authMiddleware';
 export const store = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>

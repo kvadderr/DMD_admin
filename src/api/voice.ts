@@ -25,8 +25,8 @@ const voiceApi = baseApi.injectEndpoints({
       }),
     }),
     deleteVoice: builder.mutation<any, any>({
-      query: () => ({
-        url: `/voices`,
+      query: (dto) => ({
+        url: `/voices/`+dto.id,
         method: 'DELETE',
         providesTags: ['Voice'],
       }),

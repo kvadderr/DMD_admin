@@ -22,7 +22,6 @@ function getItem(
 export const menuItems: MenuProps['items'] = [
   getItem('Приложение', 'sub1', <UsergroupAddOutlined />, [
     getItem('Все пользователи', '/users'),
-    getItem('Подписки', '/premium'),
     getItem('Статистика', '/statistic'),
   ]),
   getItem('Медитации', 'sub2', <SettingOutlined />, [

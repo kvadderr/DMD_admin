@@ -42,19 +42,17 @@ const MeditationModal = ({ meditatation, close }: Props) => {
   };
 
   useEffect(() => {
-    if (dataCreate) {
+    if(dataCreate) {
       dispatch(addMeditation(dataCreate));
       close();
-    }
+    } 
   }, [dataCreate])
 
   const onFinish = async (values: any) => {
     values.categories = selectedTags;
     values.photo = photo;
     values.isSubscribed = isSubscribed;
-    const { audios, ...newMeditatation } = meditatation || {};
-    meditatation = { ...newMeditatation, ...values };
-  
+    meditatation = { ...(meditatation || {}), ...values };
     if (meditatation?.id) {
       meditatation && await updateMeditation(meditatation).unwrap()
       dispatch(editMeditatation(meditatation))

@@ -21,7 +21,10 @@ const slice = createSlice({
       if (index !== -1) {
         state.categories[index] = action.payload;
       }
-    }
+    },
+    removeCategory: (state, action) => {
+      state.categories = state.categories.filter(category => category.id !== action.payload.id);
+    },
   },
   extraReducers: builder => {
     builder
@@ -38,6 +41,6 @@ export const selectCategories = (state: RootState): Category[] =>
   state.categorySlice.categories;
 
 
-export const { addCategory, editCategory } = slice.actions;
+export const { addCategory, editCategory, removeCategory } = slice.actions;
 
 export default slice.reducer;

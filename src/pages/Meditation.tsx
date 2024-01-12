@@ -94,11 +94,11 @@ const MeditationPage = () => {
         <Title level={4}>Медитации</Title>
         <Button type="primary" onClick={() => openModal(null)}>Добавить медитацию</Button>
       </Flex>
-      <Table columns={columns} dataSource={meditations} />
+      <Table columns={columns} dataSource={meditations} rowKey={meditation => meditation.id}/>
       <Modal width={1200} title="Данные медитации" footer={null} open={isOpen} onCancel={() => setIsOpen(false)}>
         <MeditaionModal meditatation={selectedMeditation} close={() => setIsOpen(false)}/>
       </Modal>
-      <Modal width={500} title="Данные аудио" footer={null} open={isOpenAudio} onCancel={() => setIsOpenAudio(false)}>
+      <Modal width={600} title="Данные аудио" footer={null} open={isOpenAudio} onCancel={() => setIsOpenAudio(false)}>
         <AudioModal audios={audios} meditation={selectedMeditation} close={() => setIsOpen(false)}/>
       </Modal>
     </Flex>

@@ -10,7 +10,7 @@ import Login from './layout/Login'
 export default () => {
 
   const isAuth = useAppSelector(selectIsAuthorized)
-  console.log(isAuth)
+  
   return (
     <App style={{ height: '100%' }} notification={{ placement: 'topRight' }}>
       <Routes>
@@ -23,7 +23,7 @@ export default () => {
             title="404"
           />} />
         </Route>
-        <Route path='/' element={<PublicRoute isAuth={isAuth} />}>
+        <Route path='/login' element={<PublicRoute isAuth={isAuth} />}>
           <Route path='/login' element={<Login />} />
           <Route path='*' element={<Result
             status="404"

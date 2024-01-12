@@ -17,12 +17,12 @@ const CategoryModal = ({ category, close }: Props) => {
   const [updateCategory, {isLoading: isLoadingUpdate}] = useUpdateCategoryMutation();
   const [currentCategory, setCurrentCategory] = useState<Partial<Category> | null>();
   const dispatch = useAppDispatch();
-
+  
   useEffect(() => {
     setCurrentCategory(null)
     category && setCurrentCategory(category)
   }, [category])
-
+  
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const updatedCategory = { ...currentCategory, name: e.target.value };
     setCurrentCategory(updatedCategory);
@@ -39,9 +39,9 @@ const CategoryModal = ({ category, close }: Props) => {
   }
 
   useEffect(() => {
-    dataCreate && dispatch(addCategory(currentCategory))
+    dataCreate && dispatch(addCategory(dataCreate))
   }, [dataCreate])
-  
+
   return (
     <Flex vertical gap={10}>
       <Input addonBefore={'Название категории'} value={currentCategory ? currentCategory.name : ''} onChange={handleNameChange}/>

@@ -21,7 +21,10 @@ const slice = createSlice({
       if (index !== -1) {
         state.voices[index] = action.payload;
       }
-    }
+    },
+    removeVoice: (state, action) => {
+      state.voices = state.voices.filter(voice => voice.id !== action.payload.id);
+    },
   },
   extraReducers: builder => {
     builder
@@ -38,6 +41,6 @@ export const selectVoices = (state: RootState): Voice[] =>
 state.voiceSlice.voices;
 
 
-export const { addVoice, editVoice } = slice.actions;
+export const { addVoice, editVoice, removeVoice } = slice.actions;
 
 export default slice.reducer;

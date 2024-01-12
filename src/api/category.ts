@@ -25,8 +25,8 @@ const categoryApi = baseApi.injectEndpoints({
       }),
     }),
     deleteCategory: builder.mutation<any, any>({
-      query: () => ({
-        url: `/category`,
+      query: (dto) => ({
+        url: `/category/`+dto.id,
         method: 'DELETE',
         headers: {
           authorization: 'Bearer ' + localStorage.getItem('token') || '',

@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../store/storeHooks";
-import { Flex, Button, Upload, Select, List } from "antd";
+import { Flex, Button, Upload, Select, List, Typography } from "antd";
 import ReactAudioPlayer from 'react-audio-player';
 import type { UploadProps } from 'antd';
-import { useCreateAudioMutation } from "../../api/audio";
+import { useCreateAudioMutation, useDeleteAudioMutation } from "../../api/audio";
 import { selectVoices } from "../../store/slices/voiceSlice";
-import { addMeditatationAudio } from "../../store/slices/meditationSlice";
+import { addMeditatationAudio, removeMeditatationAudio } from "../../store/slices/meditationSlice";
 import { Audio } from "../../@types/entity/Audio";
 import { Meditation } from "../../@types/entity/Meditation";
 const { Dragger } = Upload;
@@ -16,17 +16,17 @@ type Props = {
   meditation: Meditation | null;
 }
 
-const AudioModal = ({ audios, close, meditation }: Props) => {
-  console.log(meditation)
+const AudioModal = ({ audios, meditation }: Props) => {
+  
   const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
   const [createAudio, { data: dataCreate, isLoading: isLoadingCreate }] = useCreateAudioMutation();
+  const [deleteAudio, { data: dataDelete, error }] = useDeleteAudioMutation();
   const [link, setLink] = useState("");
   const [selectedVoicer, setSelectedVoicer] = useState<number>()
   const [audioData, setAudioData] = useState<Audio[]>([])
   const voices = useAppSelector(selectVoices);
   const save = async () => {
-    console.log(meditation)
     const data: Audio = {
       link: link,
       meditation_id: meditation?.id,
@@ -71,16 +71,26 @@ const AudioModal = ({ audios, close, meditation }: Props) => {
     } 
   }, [dataCreate])
 
+  const deleteAudioFromList = (id: number | undefined) => {
+    deleteAudio({id: id})
+    dispatch(removeMeditatationAudio({id: id}))
+    const updatedAudios = audioData.filter(audio => audio.id !== id);
+    setAudioData(updatedAudios)
+  }
 
+  useEffect(() => {
+    
+  }, [dataDelete, error])
   return (
     <Flex vertical gap={10}>
       <List
         itemLayout="horizontal"
         dataSource={audioData}
         renderItem={(item) => (
-          <List.Item actions={[<a key="list-loadmore-more">Удалить</a>]}>
-            <Flex>
+          <List.Item actions={[<a key="list-loadmore-more" onClick={() => deleteAudioFromList(item.id)}>Удалить</a>]}>
+            <Flex align="center" gap={30}>
               <ReactAudioPlayer src={item.link} controls />
+              <Typography.Text>{item.voice?.name}</Typography.Text>
             </Flex>
           </List.Item>
         )}

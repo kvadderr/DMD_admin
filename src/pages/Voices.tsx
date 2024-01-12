@@ -1,8 +1,8 @@
-import { Avatar, List, Typography, Flex, Button, Modal, Popconfirm } from "antd"
-import { useAppSelector } from "../store/storeHooks"
-import { selectVoices } from "../store/slices/voiceSlice"
-import { useState } from "react"
-
+import { Avatar, List, Typography, Flex, Button, Modal, Popconfirm, App } from "antd"
+import { useAppDispatch, useAppSelector } from "../store/storeHooks"
+import { selectVoices, removeVoice } from "../store/slices/voiceSlice"
+import { useState, useEffect } from "react"
+import { useDeleteVoiceMutation } from "../api/voice"
 import VoiceModal from "../components/voice/VoiceModal"
 import { Voice } from "../@types/entity/Voice"
 
@@ -10,13 +10,23 @@ const { Title } = Typography
 const Voices = () => {
 
   const [isOpen, setIsOpen] = useState(false);
+  const { notification } = App.useApp();
+  const dispatch = useAppDispatch();
   const voices = useAppSelector(selectVoices);
   const [selectedVoice, setSelectedVoice] = useState<Voice | null>(null);
-
+  const [deleteVoice, { error, data: deleteData }] = useDeleteVoiceMutation();
   const openModal = (item: Voice | null) => {
     setSelectedVoice(item);
     setIsOpen(true)
   }
+
+  useEffect(() => {
+    error && notification.info({
+      message: `Ошибка`,
+      description: 'Невозможно удалить диктора! Его записи используются',
+    })
+    deleteData && dispatch(removeVoice({id: deleteData}))
+  }, [error, deleteData])
 
   return (
     <Flex vertical gap={10}>
@@ -33,6 +43,7 @@ const Voices = () => {
               title="Удаление диктора"
               description="Вы уверены  что хотите удалить?"
               okText="Да"
+              onConfirm={() => deleteVoice(voice)}
               cancelText="Нет">
               <Button danger>Удалить</Button>
             </Popconfirm>]}>
