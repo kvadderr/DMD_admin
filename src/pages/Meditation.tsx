@@ -95,7 +95,7 @@ const MeditationPage = () => {
         <Button type="primary" onClick={() => openModal(null)}>Добавить медитацию</Button>
       </Flex>
       <Table columns={columns} dataSource={meditations} rowKey={meditation => meditation.id}/>
-      <Modal width={1200} title="Данные медитации" footer={null} open={isOpen} onCancel={() => setIsOpen(false)}>
+      <Modal width={800} title="Данные медитации" footer={null} open={isOpen} onCancel={() => setIsOpen(false)}>
         <MeditaionModal meditatation={selectedMeditation} close={() => setIsOpen(false)}/>
       </Modal>
       <Modal width={600} title="Данные аудио" footer={null} open={isOpenAudio} onCancel={() => setIsOpenAudio(false)}>
