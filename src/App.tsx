@@ -4,7 +4,7 @@ import { useAppSelector } from './store/storeHooks'
 import { selectIsAuthorized } from './store/slices/authSlice'
 import { Routes, Route } from 'react-router-dom'
 import { Result, App } from 'antd'
-import { Category, Meditation, Voices } from './pages'
+import { Category, Meditation, Voices, Slogans, SoundPage } from './pages'
 import Login from './layout/Login'
 
 export default () => {
@@ -18,6 +18,8 @@ export default () => {
           <Route path='/category' element={<Category />} />
           <Route path='/meditation' element={<Meditation />} />
           <Route path='/voices' element={<Voices />} />
+          <Route path='/slogans' element={<Slogans />} />
+          <Route path='/sound' element={<SoundPage />} />
           <Route path='*' element={<Result
             status="404"
             title="404"

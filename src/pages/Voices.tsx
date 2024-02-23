@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "../store/storeHooks"
 import { selectVoices, removeVoice } from "../store/slices/voiceSlice"
 import { useState, useEffect } from "react"
 import { useDeleteVoiceMutation } from "../api/voice"
-import VoiceModal from "../components/voice/VoiceModal"
+import VoiceModal from "../components/audio/VoiceModal"
 import { Voice } from "../@types/entity/Voice"
 
 const { Title } = Typography

@@ -8,6 +8,8 @@ import { useGetAllMeditationQuery } from '../api/meditation';
 import { useGetAllVoicesQuery } from '../api/voice';
 import { useAppDispatch } from '../store/storeHooks';
 import { logout } from '../store/slices/authSlice';
+import { useGetAllSloganQuery } from '../api/slogan';
+import { useGetAllSoundQuery } from '../api/sound';
 
 type Props = {
   children: React.ReactNode
@@ -20,6 +22,9 @@ const PrivateLayout = ({ children }: Props) => {
   useGetAllCategoryQuery();
   useGetAllMeditationQuery();
   useGetAllVoicesQuery();
+  useGetAllSloganQuery();
+  useGetAllSoundQuery();
+  
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const {

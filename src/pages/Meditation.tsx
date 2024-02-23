@@ -4,7 +4,7 @@ import type { ColumnsType } from 'antd/es/table';
 import { Meditation } from "../@types/entity/Meditation";
 import { useAppSelector } from "../store/storeHooks";
 
-import MeditaionModal from "../components/meditation/MeditationModal";
+import MeditaionModal from "../components/audio/MeditationModal";
 import AudioModal from "../components/audio/AudioModal";
 
 import { Audio } from "../@types/entity/Audio";

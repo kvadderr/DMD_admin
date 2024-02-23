@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from "../store/storeHooks"
 import { selectCategories, removeCategory } from "../store/slices/categorySlice"
 import { Category } from "../@types/entity/Category";
 import { useDeleteCategoryMutation } from "../api/category";
-import CategoryModal from "../components/category/CategoryModal";
+import CategoryModal from "../components/audio/CategoryModal";
 
 const { Title, Text } = Typography;
 
@@ -40,6 +40,12 @@ const CategoryPage = () => {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
+      render: (text) => <Text key={text}>{text}</Text>,
+    },
+    {
+      title: 'Описание',
+      dataIndex: 'description',
+      key: 'description',
       render: (text) => <Text key={text}>{text}</Text>,
     },
     {

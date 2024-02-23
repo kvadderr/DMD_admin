@@ -81,9 +81,9 @@ const MeditationModal = ({ meditatation, close }: Props) => {
     <Flex gap={20}>
       <Upload
         name="avatar"
+        listType="picture-card"
         showUploadList={false}
         onChange={handleChangePhoto}
-        style={{ width: 100 }}
         action={import.meta.env.VITE_FILE_STORAGE_URL + "/uploadImage"}>
         {photo ? <img src={photo} alt="avatar" style={{ height: 400, objectFit: 'cover' }} /> : "Загрузить"}
       </Upload>

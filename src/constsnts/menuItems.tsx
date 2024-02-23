@@ -23,6 +23,8 @@ export const menuItems: MenuProps['items'] = [
   getItem('Приложение', 'sub1', <UsergroupAddOutlined />, [
     getItem('Все пользователи', '/users'),
     getItem('Статистика', '/statistic'),
+    getItem('Слоганы', '/slogans'),
+    getItem('Звуки', '/sound'),
   ]),
   getItem('Медитации', 'sub2', <SettingOutlined />, [
     getItem('Список', '/meditation'),

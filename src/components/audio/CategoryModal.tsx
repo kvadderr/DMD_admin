@@ -13,18 +13,29 @@ type Props = {
 }
 
 const CategoryModal = ({ category, close }: Props) => {
+
   const [createCategory, {data: dataCreate, isLoading: isLoadingCreate}] = useCreateCategoryMutation();
   const [updateCategory, {isLoading: isLoadingUpdate}] = useUpdateCategoryMutation();
   const [currentCategory, setCurrentCategory] = useState<Partial<Category> | null>();
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    console.log('category', category)
+  }, [])
   
   useEffect(() => {
     setCurrentCategory(null)
+    console.log(category)
     category && setCurrentCategory(category)
   }, [category])
   
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const updatedCategory = { ...currentCategory, name: e.target.value };
+    setCurrentCategory(updatedCategory);
+  };
+
+  const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const updatedCategory = { ...currentCategory, description: e.target.value };
     setCurrentCategory(updatedCategory);
   };
 
@@ -45,6 +56,7 @@ const CategoryModal = ({ category, close }: Props) => {
   return (
     <Flex vertical gap={10}>
       <Input addonBefore={'Название категории'} value={currentCategory ? currentCategory.name : ''} onChange={handleNameChange}/>
+      <Input addonBefore={'Описание'} value={currentCategory ? currentCategory.description : ''} onChange={handleDescriptionChange}/>
       <Button type="primary" htmlType="submit" onClick={onClick} loading={isLoadingCreate || isLoadingUpdate}>Сохранить</Button>
     </Flex>
 
