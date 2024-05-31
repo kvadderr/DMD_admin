@@ -9,7 +9,7 @@ import { addMeditatationAudio, removeMeditatationAudio } from "../../store/slice
 import { Audio } from "../../@types/entity/Audio";
 import { Meditation } from "../../@types/entity/Meditation";
 const { Dragger } = Upload;
-
+const { Text } = Typography
 type Props = {
   audios?: Audio[];
   close: () => void;
@@ -22,7 +22,10 @@ const AudioModal = ({ audios, meditation }: Props) => {
   const dispatch = useAppDispatch();
   const [createAudio, { data: dataCreate, isLoading: isLoadingCreate }] = useCreateAudioMutation();
   const [deleteAudio, { data: dataDelete, error }] = useDeleteAudioMutation();
+  const [audioDuration, setAudioDuration] = useState(0);
+
   const [link, setLink] = useState("");
+  
   const [selectedVoicer, setSelectedVoicer] = useState<number>()
   const [audioData, setAudioData] = useState<Audio[]>([])
   const voices = useAppSelector(selectVoices);
@@ -30,10 +33,16 @@ const AudioModal = ({ audios, meditation }: Props) => {
     const data: Audio = {
       link: link,
       meditation_id: meditation?.id,
-      voice_id: selectedVoicer
+      voice_id: selectedVoicer,
+      duration: Math.round(audioDuration)
     }
     createAudio(data).unwrap()
   }
+
+  const handleAudioLoaded = (e: any) => {
+    console.log(e.target.duration)
+    setAudioDuration(e.target.duration);
+  };
 
   const props: UploadProps = {
     name: 'file',
@@ -45,6 +54,7 @@ const AudioModal = ({ audios, meditation }: Props) => {
         return;
       }
       if (info.file.status === 'done') {
+        console.log('info.file', info.file)
         setLoading(false);
         setLink(info.file.response.Location)
       }
@@ -63,6 +73,7 @@ const AudioModal = ({ audios, meditation }: Props) => {
   useEffect(() => {
     setAudioData(audios ? audios : [])
   }, [audios])
+
   useEffect(() => {
     if (dataCreate) {
       dispatch(addMeditatationAudio(dataCreate))
@@ -102,7 +113,9 @@ const AudioModal = ({ audios, meditation }: Props) => {
         value={selectedVoicer}
         onChange={handleChange}
         options={selectOptions} />
+      <Text>Длительность аудио: {audioDuration}</Text>
       <Button type="primary" loading={isLoadingCreate || loading} onClick={save}>Сохранить</Button>
+      <audio src={link} onLoadedMetadata={handleAudioLoaded} hidden />
     </Flex>
 
   )
