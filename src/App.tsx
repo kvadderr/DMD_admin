@@ -14,7 +14,7 @@ export default () => {
   return (
     <App style={{ height: '100%' }} notification={{ placement: 'topRight' }}>
       <Routes>
-        <Route path='/' element={<PrivateRoute isAuth={isAuth} />}>
+        <Route path='/' element={<PrivateRoute isAuth={true} />}>
           <Route path='/category' element={<Category />} />
           <Route path='/meditation' element={<Meditation />} />
           <Route path='/voices' element={<Voices />} />
